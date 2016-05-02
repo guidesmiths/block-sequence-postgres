@@ -15,7 +15,7 @@ init({ url: 'postgres://username:password@localhost/bs_test' }, function(err, dr
         if (err) throw err
 
         // Create a block array containing 1000 ids per block (defaults to 2 blocks)
-        var idGenerator = new BlockArray({ block: { driver: driver, size: 1000 } })
+        var idGenerator = new BlockArray({ block: { sequence: sequence, driver: driver, size: 1000 } })
 
         // Grab the next id
         idGenerator.next(function(err, id) {
