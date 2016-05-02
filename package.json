@@ -14,6 +14,7 @@
     "Sequence",
     "Id",
     "Generator",
+    "PostgreSQL",
     "Postgres"
   ],
   "author": "GuideSmiths",
