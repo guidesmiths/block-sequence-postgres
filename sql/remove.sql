@@ -1,0 +1,1 @@
+DELETE FROM gs_block_sequence WHERE name = $1;
