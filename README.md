@@ -37,4 +37,3 @@ init({ url: 'postgres://username:password@localhost/bs_test' }, (err, driver) =>
 See [pg](https://www.npmjs.com/package/pg) for all connection parameters
 
 
-
