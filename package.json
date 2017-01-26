@@ -4,10 +4,12 @@
   "description": "A Postgres implementation of block-sequence",
   "main": "index.js",
   "scripts": {
-    "test": "node tests/compliance.tests.js | tap-spec",
+    "test": "node test/compliance.tests.js | tap-spec",
     "lint": "eslint .",
+    "istanbul": "istanbul cover --report html --report lcov tape -- test/compliance.tests.js",
+    "codeclimate": "codeclimate-test-reporter < coverage/lcov.info",
     "prepush": "npm run lint && npm test",
-    "docker": "docker run --detach --publish 5432:5432 --name bs-postgres postgres"
+    "docker": "docker run --detach --publish 5432:5432 --name postgres kiasaki/alpine-postgres"
   },
   "keywords": [
     "Block",
@@ -20,18 +22,20 @@
   "author": "GuideSmiths",
   "license": "ISC",
   "devDependencies": {
-    "block-sequence-compliance-tests": "0.1.0",
-    "eslint": "^0.24.1",
-    "eslint-config-imperative": "0.0.6",
-    "eslint-plugin-imperative": "0.0.2",
-    "husky": "^0.11.4",
+    "block-sequence-compliance-tests": "^1.2.0",
+    "codeclimate-test-reporter": "^0.4.0",
+    "eslint": "^3.12.2",
+    "eslint-config-imperative": "^1.0.0",
+    "eslint-plugin-imperative": "^1.0.0",
+    "husky": "^0.13.0",
+    "istanbul": "^0.4.5",
     "tap-spec": "^4.1.1"
   },
   "dependencies": {
-    "async": "^2.0.0-rc.3",
-    "debug": "^2.2.0",
-    "lodash": "^4.11.1",
-    "pg": "^4.5.5",
+    "async": "^2.1.4",
+    "debug": "^2.6.0",
+    "lodash": "^4.17.4",
+    "pg": "^6.1.2",
     "safe-json-parse": "^4.0.0"
   },
   "directories": {
@@ -44,5 +48,5 @@
   "bugs": {
     "url": "https://github.com/guidesmiths/block-sequence-postgres/issues"
   },
-  "homepage": "https://github.com/guidesmiths/block-sequence-postgres#readme"
+  "homepage": "https://guidesmiths.github.io/block-sequence-postgres/"
 }
