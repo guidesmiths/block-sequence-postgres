@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - sudo service postgres stop
+  - sudo service postgresql stop
   - docker run --detach --publish 5432:5432 --name postgres kiasaki/alpine-postgres
   - sleep 10
 
