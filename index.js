@@ -9,7 +9,7 @@ var bigInt = require('big-integer')
 
 module.exports = function init(config, cb) {
 
-    if (typeof Promise == 'undefined') global.Promise = require('promise-polyfill')
+    if (typeof Promise === 'undefined') global.Promise = require('promise-polyfill')
     if (arguments.length === 1) return init({}, arguments[0])
     if (!config.url) return cb(new Error('url is required'))
 
