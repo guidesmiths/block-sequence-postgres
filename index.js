@@ -5,6 +5,7 @@ var safeParse = require('safe-json-parse/callback')
 var async = require('async')
 var fs = require('fs')
 var path = require('path')
+var bigInt = require('big-integer')
 
 module.exports = function init(config, cb) {
 
@@ -77,7 +78,9 @@ module.exports = function init(config, cb) {
     function deserialize(record, cb) {
         safeParse(record.metadata, function(err, metadata) {
             // Because value is a BIGINT which could execeed Number.MAX_SAFE_INTEGER postgres returns a string.
-            cb(err, { name: record.name, value: parseInt(record.value, 10), metadata: metadata })
+            var value = bigInt(record.value)
+            if (value.greater(Number.MAX_SAFE_INTEGER)) return cb(new Error('Sequence value exceeds Number.MAX_SAFE_INTEGER'))
+            cb(err, { name: record.name, value: value.toJSNumber(), metadata: metadata })
         })
     }
 
