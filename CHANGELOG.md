@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.1.0]
 - Update pg to version 7
 - Update dependencies
 - End support for node 0.10 and 0.11
