@@ -8,12 +8,12 @@ var path = require('path')
 var bigInt = require('big-integer')
 
 module.exports = function init(config, cb) {
-
     if (typeof Promise === 'undefined') global.Promise = require('promise-polyfill')
     if (Number.MAX_SAFE_INTEGER === undefined) Number.MAX_SAFE_INTEGER = 9007199254740991
     if (arguments.length === 1) return init({}, arguments[0])
     if (!config.url) return cb(new Error('url is required'))
 
+    var pool = new pg.Pool({ connectionString: config.url })
     var scripts = {}
 
     function ensure(options, cb) {
@@ -27,10 +27,10 @@ module.exports = function init(config, cb) {
         // Despite best efforts to ensure postgres doesn't insert a sequence
         // if it already exists there's a race condition which can occur
         async.retry(2, function(cb) {
-            pg.connect(config.url, function(err, client, done) {
+            pool.connect(function(err, client, release) {
                 if (err) return cb(err)
                 client.query(scripts['ensure'], [ name, value, JSON.stringify(metadata) ], function(err, results) {
-                    done()
+                    release()
                     cb(err, results)
                 })
             })
@@ -46,10 +46,10 @@ module.exports = function init(config, cb) {
 
         ensure(options, function(err, sequence) {
             if (err) return cb(err)
-            pg.connect(config.url, function(err, client, done) {
+            pool.connect(function(err, client, release) {
                 if (err) return cb(err)
                 client.query(scripts['allocate'], [ sequence.name, size ], function(err, results) {
-                    done()
+                    release()
                     if (err) return cb(err)
                     deserialize(results.rows[0], function(err, sequence) {
                         if (err) return cb(err)
@@ -67,10 +67,10 @@ module.exports = function init(config, cb) {
     function remove(options, cb) {
         debug('Removing %s', options.name)
         if (options.name === null || options.name === undefined) return cb(new Error('name is required'))
-        pg.connect(config.url, function(err, client, done) {
+        pool.connect(function(err, client, release) {
             if (err) return cb(err)
             client.query(scripts['remove'], [options.name.toLowerCase()], function(err) {
-                done()
+                release()
                 cb(err)
             })
         })
@@ -86,7 +86,7 @@ module.exports = function init(config, cb) {
     }
 
     function close(cb) {
-        pg.end(cb)
+        pool.end(cb)
     }
 
     function loadScripts(cb) {
@@ -105,10 +105,10 @@ module.exports = function init(config, cb) {
 
     function createBlockSequenceTable(cb) {
         debug('Creating gs_block_sequence table')
-        pg.connect(config.url, function(err, client, done) {
+        pool.connect(function(err, client, release) {
             if (err) return cb(err)
             client.query(scripts['create_gs_block_sequence_table'], [], function(err) {
-                done()
+                release()
                 cb(err)
             })
         })
