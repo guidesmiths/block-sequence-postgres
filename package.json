@@ -36,7 +36,7 @@
     "big-integer": "^1.6.26",
     "debug": "^2.6.9",
     "lodash": "^4.17.4",
-    "pg": "^7.4.1",
+    "pg": "^8.4.0",
     "promise-polyfill": "^6.1.0",
     "safe-json-parse": "^4.0.0"
   },
